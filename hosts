@@ -1,0 +1,19 @@
+[all_Servers]
+master1 ansible_host=192.168.23.100
+nodea   ansible_host=192.168.23.101
+nodeb   ansible_host=192.168.23.102
+
+[consul_Bootstrap]
+nodea   ansible_host=192.168.23.101
+
+[consul_Servers]
+nodeb   ansible_host=192.168.23.102
+nodea   ansible_host=192.168.23.101
+
+[consul_Clients]
+master1 ansible_host=192.168.23.100
+
+[all:vars]
+ansible_port=22
+ansible_user=root
+ansible_ssh_private_key_file=/root/.ssh/ansible-server.key

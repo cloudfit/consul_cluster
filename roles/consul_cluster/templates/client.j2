@@ -1,0 +1,10 @@
+{
+    "server": false,
+    "datacenter": "{{ datacenter }}",
+    "node_name": "{{ inventory_hostname }}",
+    "data_dir": "{{ datadir }}",
+    "encrypt": "gnrs3cVRSlIIZGFdK6NazA==",
+    "log_level": "INFO",
+    "enable_syslog": true
+    "start_join": {{ groups['consul_Bootstrap'] }}
+}

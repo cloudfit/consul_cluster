@@ -1,0 +1,4 @@
+---
+- name: add consul user
+  user: name={{ item }} state=present shell=/bin/bash
+  with_items: "{{ users }}"

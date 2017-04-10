@@ -1,0 +1,6 @@
+---
+package_list:
+ - git
+ - vim
+ - screen
+ - unzip

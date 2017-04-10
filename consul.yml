@@ -1,0 +1,9 @@
+---
+- name: Setup consul bootstrap
+  hosts: all_Servers
+  remote_user: root
+  become: yes
+  roles:
+   - users
+   - consul_cluster
+...
