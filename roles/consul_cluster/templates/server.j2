@@ -6,6 +6,6 @@
     "data_dir": "{{ datadir }}",
     "log_level": "INFO",
     "encrypt": "gnrs3cVRSlIIZGFdK6NazA==",
-    "enable_syslog": true
-    "start_join": {{ groups['consul_Bootstrap'] }}
+    "enable_syslog": true,
+    "start_join": ["{{  bootstrap }}"]
 }

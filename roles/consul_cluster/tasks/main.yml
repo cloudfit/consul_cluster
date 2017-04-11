@@ -11,44 +11,62 @@
 - name: Create /etc/consul.d Directory
   file: path={{ configdir }} state=directory owner=consul group=consul mode=0775 recurse=yes
 
-- name: Copy Json Config File for bootstrap
+- name: Copying Json Config File for bootstrap "{{ bootstrap }}"
   template: src=bootstrap.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Bootstrap
 
-- name: Copy upstart config files for Servers
-  template: src=consul_server.j2 dest={{ initdir }}/consul.conf
-  when: inventory_hostname in groups.consul_Servers
-
-- name: Start consul server on bootstraping
-  command: start consul
-  when: inventory_hostname in groups.consul_Bootstrap
-
-- name: Copy Json Config File for Servers
+- name: Copying Json Config File for Servers
   template: src=server.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Servers
 
-- name: Copy Json Config File for clients
+- name: Copying Json Config File for clients
   template: src=client.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Clients
 
-- name: Copy upstart config files for Clients
+- name: Copying upstart config files for Clients
   template: src=consul_client.j2 dest={{ initdir }}/consul.conf
   when: inventory_hostname in groups.consul_Clients
 
-- name: start consul servers
-  command: start consul
+- name: Copying upstart config files for Servers
+  template: src=consul_server.j2 dest={{ initdir }}/consul.conf
   when: inventory_hostname in groups.consul_Servers
 
-- name: start consul clients
-  command: start consul
-  when: inventory_hostname in groups.consul_Clients
-
-- name: check consult agent status
+- name: Checking consult agent status
   shell: ps aux | grep consul | grep -v grep
   register: service_consul_status
   failed_when: service_consul_status.rc != 0
   ignore_errors: true
 
-- name: restart consul server if started
-  shell: stop consul && start consul
-  when: service_consul_status.rc != 1
+- name: Stoping Consul if started
+  command: stop consul
+  when:
+   - service_consul_status.rc != 1
+
+- name: Startup consul server on bootstraping
+  command: start consul
+  when:
+   - inventory_hostname in groups.consul_Bootstrap
+
+- name: Startup consul servers
+  command: start consul
+  when:
+   - inventory_hostname in groups.consul_Servers
+
+- name: Startup consul clients
+  command: start consul
+  when:
+   - inventory_hostname in groups.consul_Clients
+
+- name: Copying Json Config File for bootstrap
+  template: src=server.j2 dest={{ configdir }}/config.json
+  when: inventory_hostname in groups.consul_Bootstrap
+
+- name: stop consul server bootstrap
+  command: stop consul
+  when:
+    - inventory_hostname in groups.consul_Bootstrap
+
+- name: start consul server bootstrap on normal mode
+  command: start consul
+  when:
+    - inventory_hostname in groups.consul_Bootstrap

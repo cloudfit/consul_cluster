@@ -2,6 +2,7 @@ consul_binary_repo: "https://releases.hashicorp.com/consul/0.8.0"
 consul_binary_linux: "{{ consul_binary_repo }}/consul_0.8.0_linux_amd64.zip"
 consul_binary_solaris: "{{ consul_binary_repo }}/consul_0.8.0_solaris_amd64.zip"
 
+bootstrap: "192.168.23.101"
 initdir: /etc/init
 configfile: /etc/consul.d/config.json
 configdir: /etc/consul.d

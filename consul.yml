@@ -1,5 +1,5 @@
 ---
-- name: Setup consul bootstrap
+- name: Setup consul cluster
   hosts: all_Servers
   remote_user: root
   become: yes

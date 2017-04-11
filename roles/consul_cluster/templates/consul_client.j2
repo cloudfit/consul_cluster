@@ -8,4 +8,4 @@ respawn
 setuid consul
 setgid consul
 
-exec consul agent -ui -config-file {{ configfile }} -config-dir {{ configdir }} -client={{ ansible_host }} -bind={{ ansible_host }}
+exec consul agent -ui -config-file {{ configfile }} -config-dir {{ configdir }} -client {{ ansible_host }} -bind={{ ansible_host }}
