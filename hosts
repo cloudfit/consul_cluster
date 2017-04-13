@@ -1,18 +1,23 @@
 [all_Servers]
 master1 ansible_host=192.168.23.100
-nodea   ansible_host=192.168.23.101
-nodeb   ansible_host=192.168.23.102
+node-1   ansible_host=192.168.23.11
+node-2   ansible_host=192.168.23.12
+node-4   ansible_host=192.168.23.14
 
 [consul_Bootstrap]
-nodea   ansible_host=192.168.23.101
+node-1   ansible_host=192.168.23.11
 
 [consul_Servers]
-nodeb   ansible_host=192.168.23.102
+node-2   ansible_host=192.168.23.12
 
 [consul_Clients]
 master1 ansible_host=192.168.23.100
+node-4   ansible_host=192.168.23.14
 
 [all:vars]
 ansible_port=22
 ansible_user=root
-ansible_ssh_private_key_file=/root/.ssh/ansible-server.key
+ansible_ssh_private_key_file=/home/vagrant/.ssh/ansible-server.key
+
+[New_servers]
+node-4   ansible_host=192.168.23.14

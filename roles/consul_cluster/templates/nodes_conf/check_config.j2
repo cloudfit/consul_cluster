@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+    "id": "mem-util",
+    "name": "check_mem",
+    "notes": "Critical 5%, warning 10% free",
+    "script": "/etc/consul.d/plugins/check_mem.py -w 20 -c 5",
+    "status": "passing",
+    "interval": "1m"
+    },
+    {
+    "id": "cpu-util",
+    "name": "check_cpu",
+    "notes": "Critical 95%, warning 80% usage",
+    "script": "/etc/consul.d/plugins/check_cpu.py -W 80 -C 95",
+    "status": "passing",
+    "interval": "1m"
+    }
+  ]
+}

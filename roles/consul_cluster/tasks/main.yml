@@ -11,36 +11,50 @@
 - name: Create /etc/consul.d Directory
   file: path={{ configdir }} state=directory owner=consul group=consul mode=0775 recurse=yes
 
+- name: Create "{{ pluginsdir }}" Directory
+  file: path={{ pluginsdir }} state=directory owner=consul group=consul mode=0775 recurse=yes
+
+- name: copy python plugins
+  copy:
+    src: "{{ item }}"
+    dest: "{{ pluginsdir }}"
+    owner: consul
+    mode: 0775
+  with_fileglob:
+    - "{{ role_path }}/files/plugins_python/*"
+
 - name: Copying Json Config File for bootstrap "{{ bootstrap }}"
-  template: src=bootstrap.j2 dest={{ configdir }}/config.json
+  template: src=nodes_conf/bootstrap.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Bootstrap
 
+- name: Copying check Config Files
+  template: src=nodes_conf/check_config.j2 dest={{ configdir }}/check_config.json
+
 - name: Copying Json Config File for Servers
-  template: src=server.j2 dest={{ configdir }}/config.json
+  template: src=nodes_conf/server.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Servers
 
 - name: Copying Json Config File for clients
-  template: src=client.j2 dest={{ configdir }}/config.json
+  template: src=nodes_conf/client.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Clients
 
 - name: Copying upstart config files for Clients
-  template: src=consul_client.j2 dest={{ initdir }}/consul.conf
+  template: src=upstart_scripts/consul_client.j2 dest={{ initdir }}/consul.conf
   when: inventory_hostname in groups.consul_Clients
 
-- name: Copying upstart config files for Servers
-  template: src=consul_server.j2 dest={{ initdir }}/consul.conf
-  when: inventory_hostname in groups.consul_Servers
+- name: Copying upstart config files for bootstrap
+  template: src=upstart_scripts/consul_server.j2 dest={{ initdir }}/consul.conf
+  when: inventory_hostname in groups.consul_Bootstrap
 
-- name: Checking consult agent status
-  shell: ps aux | grep consul | grep -v grep
-  register: service_consul_status
-  failed_when: service_consul_status.rc != 0
-  ignore_errors: true
+- name: Copying upstart config files for Servers
+  template: src=upstart_scripts/consul_server.j2 dest={{ initdir }}/consul.conf
+  when: inventory_hostname in groups.consul_Servers
 
 - name: Stoping Consul if started
   command: stop consul
-  when:
-   - service_consul_status.rc != 1
+  register: service_consul_status
+  failed_when: service_consul_status.rc != 0
+  ignore_errors: true
 
 - name: Startup consul server on bootstraping
   command: start consul
@@ -58,7 +72,7 @@
    - inventory_hostname in groups.consul_Clients
 
 - name: Copying Json Config File for bootstrap
-  template: src=server.j2 dest={{ configdir }}/config.json
+  template: src=nodes_conf/server.j2 dest={{ configdir }}/config.json
   when: inventory_hostname in groups.consul_Bootstrap
 
 - name: stop consul server bootstrap

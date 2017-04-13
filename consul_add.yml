@@ -1,6 +1,6 @@
 ---
 - name: Setup consul cluster
-  hosts: all_Servers
+  hosts: New_servers
   remote_user: vagrant
   become: yes
   roles:
