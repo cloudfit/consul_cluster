@@ -1,0 +1,32 @@
+---
+- name: uname -r
+  shell: uname -r
+  register: uname_r
+
+- name: debug
+  debug: msg="{{uname_r.stdout}}"
+
+- name: Install linux-image-extra-{{uname_r.stdout}}
+  apt: name=linux-image-extra-{{ uname_r.stdout }} state=latest update_cache=yes
+
+- name: Install Packeges
+  apt: name={{ item }} state=latest
+  with_items: "{{ docker_pre_list }}"
+
+- name: Add Docker key
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+- name: lsb_release
+  shell: lsb_release -cs
+  register: release
+
+- name: lsb_release
+  debug: msg="{{release.stdout}}"
+
+- name: Add repo
+  apt_repository:
+     repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release.stdout}} stable
+     state: present
+
+- name: Install Packeges
+  apt: name=docker-ce state=latest update_cache=yes

@@ -1,0 +1,8 @@
+---
+
+docker_pre_list:
+ - linux-image-extra-virtual
+ - apt-transport-https
+ - ca-certificates
+ - software-properties-common
+ - curl 
